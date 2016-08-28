@@ -54,6 +54,18 @@ for line in open(filepath + filename):
             j += 1
             continue
         vector['subject'] = sub_tmp_list
+
+        vector["process"] = "None"
+        for sub_tmp in sub_tmp_list:
+            if sub_tmp.find("/pkg/apiserver") != -1:
+                vector["process"] = "kube-apiserver"
+                break;
+            elif sub_tmp.find("/pkg/master") != -1:
+                vector["process"] = "kube-controller-manager"
+                break;
+        if vector["process"] != "None":
+            continue
+
         vectors.append(vector.copy())
         i += 1
         # print line,
@@ -92,7 +104,7 @@ for vector in vectors:
     #vector["no"] = 0
     vector["no"] = len(vector["subject"])
 #     print vector
-print tabulate(vectors)
+print tabulate(vectors, headers={"process": "Process", "path": "Path", "no": "No.", "method": "Method", "subject": "Subject"})
 
 # print "Delete" vectors
 # for vector in vectors:
