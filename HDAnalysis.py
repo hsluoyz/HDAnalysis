@@ -32,7 +32,28 @@ else:
     filename = "vectors.txt"
 
 def encode_subject(subject):
-    return "Encoded: "
+    res = "None"
+
+    # String Print Algorithm (SP)
+    # res = subject
+
+    # Stack Level Count Algorithm (SLC)
+    # res = subject.__len__()
+
+    # Hash Digest Algorithm (HD)
+    # tmp = ""
+    # for sub_tmp in subject:
+    #     tmp += sub_tmp + "\n"
+    # res = str(hash(tmp))
+
+    # Code Line Backtracking Algorithm (CLB)
+    tmp = ""
+    for i in range (0, min(subject.__len__(), 5)):
+        code_line = subject[i].split(", ")
+        tmp += code_line[-1]
+        if i != min(subject.__len__(), 5) - 1:
+            tmp += "-"
+    return tmp
 
 def print_table():
     # print part of "vectors"
@@ -51,7 +72,7 @@ def print_table():
 
     # print the human readable table:
     print tabulate(vectors, headers={"process": "Process", "path": "Path", "method": "Method",
-                                     "encoded_subject": "Encoded Subject", "subject": "Subject"})
+                                     "encoded_subject": "ESubject", "subject": "Subject"})
 
     # print the policy
     # for vector in vectors:
@@ -102,7 +123,7 @@ for line in open(filepath + filename):
             j += 1
             continue
         vector['subject'] = sub_tmp_list
-        #vector['encoded_subject'] = encode_subject(sub_tmp_list)
+        vector['encoded_subject'] = encode_subject(sub_tmp_list)
 
         # get the "process"
         vector["process"] = "None"
