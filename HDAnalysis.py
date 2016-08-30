@@ -25,7 +25,7 @@ regex_num2 = re.compile(num2_pattern)
 
 if platform.system() == "Windows":
     filepath = "J:/OpenStack国家863项目/我的论文/HardenDocker/"
-    filename = "vectors-integration-pyt.txt"
+    filename = "vectors-pyt-log.txt"
     #filename = "vectors-unit.txt"
 else:
     filepath = "/k8slog/"
@@ -49,8 +49,16 @@ def print_table():
     # vector["no"] = len(vector["subject"])
     # print vector
 
+    # print the human readable table:
     print tabulate(vectors, headers={"process": "Process", "path": "Path", "method": "Method",
                                      "encoded_subject": "Encoded Subject", "subject": "Subject"})
+
+    # print the policy
+    # for vector in vectors:
+    #     print vector["path"] + ", " + vector["method"]
+    #     for sub_tmp in vector["subject"]:
+    #         print sub_tmp
+    #     print ""
 
     # print "Delete" vectors
     # for vector in vectors:
