@@ -71,7 +71,7 @@ def print_table():
     # print vector
 
     # print the human readable table:
-    print tabulate(vectors, headers={"process": "Process", "path": "Path", "method": "Method",
+    print tabulate(vectors, headers={"process": "Process", "no": "Freq", "path": "Path", "method": "Method",
                                      "encoded_subject": "ESubject", "subject": "Subject"})
 
     # print the policy
@@ -106,6 +106,7 @@ for line in open(filepath + filename):
         vector.clear()
         path, method = line.strip().split(",")
         # vector["no"] = str(i)
+        vector["no"] = 1
 
         # formalize the path
         vector["path"] = regex_uuid.sub("%UUID%", path.strip())
@@ -160,6 +161,7 @@ while i < len(vectors):
             vectors[i]["method"] == vectors[i - 1]["method"] and
             cmp(vectors[i]["subject"], vectors[i - 1]["subject"]) == 0):
                 # vectors[i - 1]["no"] += (", " + vectors[i]["no"])
+                vectors[i - 1]["no"] += 1
                 del vectors[i]
     else:
         i += 1
