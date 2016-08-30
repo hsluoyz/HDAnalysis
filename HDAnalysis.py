@@ -120,9 +120,10 @@ for line in open(filepath + filename):
         if len(sub_tmp_list) < 100:
             sub_tmp_list.append(regex_subject.sub("/", line.strip()))
     else:
-        if sub_tmp_list[0].startswith("/test/"):
-            j += 1
-            continue
+        # removed some items.
+        # if sub_tmp_list[0].startswith("/test/"):
+        #     j += 1
+        #     continue
         vector['subject'] = sub_tmp_list
         vector['encoded_subject'] = encode_subject(sub_tmp_list)
 
