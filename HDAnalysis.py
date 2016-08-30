@@ -31,14 +31,20 @@ else:
     filepath = "/k8slog/"
     filename = "vectors.txt"
 
+def get_subject_string(subject):
+    tmp = ""
+    for sub_tmp in subject:
+        tmp += sub_tmp + "\n"
+    return tmp
+
 def encode_subject(subject):
     res = "None"
 
     # String Print Algorithm (SP)
-    # res = subject
+    # res = get_subject_string(subject)
 
     # Stack Level Count Algorithm (SLC)
-    # res = subject.__len__()
+    # res = str(subject.__len__())
 
     # Hash Digest Algorithm (HD)
     # tmp = ""
@@ -48,12 +54,15 @@ def encode_subject(subject):
 
     # Code Line Backtracking Algorithm (CLB)
     tmp = ""
-    for i in range (0, min(subject.__len__(), 5)):
+    level = 5
+    for i in range (0, min(subject.__len__(), level)):
         code_line = subject[i].split(", ")
         tmp += code_line[-1]
-        if i != min(subject.__len__(), 5) - 1:
+        if i != min(subject.__len__(), level) - 1:
             tmp += "-"
-    return tmp
+    res = tmp
+
+    return res
 
 def print_table():
     # print part of "vectors"
@@ -178,3 +187,21 @@ freq_size = 0
 for vector in vectors:
     freq_size += vector["no"]
 print "Total frequency of vectors:", freq_size
+
+sum = 0.0
+for vector in vectors:
+    sum += vector["encoded_subject"].__len__()
+sum /= vectors.__len__()
+print "Average Size of encoded subjects:", round(sum, 2)
+
+tmp_set = set()
+for vector in vectors:
+    tmp_set.add(get_subject_string(vector["subject"]))
+sub_category_cnt = tmp_set.__len__()
+
+tmp_set = set()
+for vector in vectors:
+    tmp_set.add(vector["encoded_subject"])
+esub_category_cnt = tmp_set.__len__()
+
+print "New conflicts:", sub_category_cnt - esub_category_cnt, "/", vectors.__len__()
