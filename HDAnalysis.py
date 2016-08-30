@@ -179,9 +179,11 @@ while i < len(vectors):
 
 print_table()
 
+vector_size = len(vectors)
+
 print ""
 print "Original size of vectors:", vector_size_original
-print "Filtered size of vectors:", len(vectors)
+print "Filtered size of vectors:", vector_size
 
 freq_size = 0
 for vector in vectors:
@@ -190,8 +192,8 @@ print "Total frequency of vectors:", freq_size
 
 sum = 0.0
 for vector in vectors:
-    sum += vector["encoded_subject"].__len__()
-sum /= vectors.__len__()
+    sum += vector["encoded_subject"].__len__() * vector["no"]
+sum /= vector_size_original
 print "Average Size of encoded subjects:", round(sum, 2)
 
 tmp_set = set()
@@ -204,4 +206,16 @@ for vector in vectors:
     tmp_set.add(vector["encoded_subject"])
 esub_category_cnt = tmp_set.__len__()
 
-print "New conflicts:", sub_category_cnt - esub_category_cnt, "/", vectors.__len__()
+print "New conflicts:", sub_category_cnt - esub_category_cnt
+
+sum_apiserver = 0
+sum_controller_manager = 0
+for vector in vectors:
+    if vector["process"] == "kube-apiserver":
+        sum_apiserver += vector["no"]
+    elif vector["process"] == "kube-controller-manager":
+        sum_controller_manager += vector["no"]
+
+print "Originated from 'kube-apiserver':", sum_apiserver
+print "Originated from 'kube-controller-manager':", sum_controller_manager
+print "Originated from other places:", vector_size_original - sum_apiserver - sum_controller_manager
