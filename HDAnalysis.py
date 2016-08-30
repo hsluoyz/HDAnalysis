@@ -145,7 +145,8 @@ for line in open(filepath + filename):
         i += 1
         # print line,
 
-print "Original size of vectors:", len(vectors) + j
+vector_size_original = len(vectors) + j
+
 
 # sort the vectors based on "path"
 vectors.sort(lambda x, y: cmp(x['subject'], y['subject']))
@@ -167,6 +168,13 @@ while i < len(vectors):
     else:
         i += 1
 
+print_table()
+
+print ""
+print "Original size of vectors:", vector_size_original
 print "Filtered size of vectors:", len(vectors)
 
-print_table()
+freq_size = 0
+for vector in vectors:
+    freq_size += vector["no"]
+print "Total frequency of vectors:", freq_size
