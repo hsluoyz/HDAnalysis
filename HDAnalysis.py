@@ -8,6 +8,7 @@ from tabulate import tabulate
 vectors = []
 vector = {}
 sub_tmp_list = []
+process_cnts = {}
 i = 0
 
 uuid_pattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
@@ -24,7 +25,7 @@ regex_num2 = re.compile(num2_pattern)
 
 
 if platform.system() == "Windows":
-    filepath = "J:/OpenStack国家863项目/我的论文/HardenDocker/"
+    filepath = "J:/OpenStack国家863项目/我的论文/CodeTE/"
     filename = "vectors-pyt-log.txt"
     #filename = "vectors-unit.txt"
 else:
@@ -108,6 +109,30 @@ def print_table():
     # print len(methods)
     # print methods
 
+def get_process(sub_tmp_list):
+    for sub_tmp in sub_tmp_list:
+        if sub_tmp.find("/pkg/apiserver") != -1:
+            return "kube-apiserver"
+        elif sub_tmp.find("/pkg/master") != -1:
+            return "kube-controller-manager"
+        elif sub_tmp.find("/ipallocator") != -1 or sub_tmp.find("/portallocator") != -1:
+            return "kube-scheduler"
+
+    if sub_tmp_list[0].find("/test") != -1:
+        return "TEST"
+    if sub_tmp_list[0].find("/test") != -1:
+        return "TEST"
+
+    for sub_tmp in sub_tmp_list:
+        if sub_tmp.find("/pkg/util/wait") != -1:
+            return "util"
+        elif sub_tmp.find("/pkg/registry/generic") != -1:
+            return "generic"
+        elif sub_tmp.find(".etcdWatch") != -1 or sub_tmp.find(".etcdGetInitialWatchState") != -1:
+            return "etcdWatch"
+
+    return "None"
+
 ##################################################################################################
 j = 0
 for line in open(filepath + filename):
@@ -137,14 +162,10 @@ for line in open(filepath + filename):
         vector['encoded_subject'] = encode_subject(sub_tmp_list)
 
         # get the "process"
-        vector["process"] = "None"
-        for sub_tmp in sub_tmp_list:
-            if sub_tmp.find("/pkg/apiserver") != -1:
-                vector["process"] = "kube-apiserver"
-                break;
-            elif sub_tmp.find("/pkg/master") != -1:
-                vector["process"] = "kube-controller-manager"
-                break;
+        vector["process"] = get_process(sub_tmp_list)
+        if not process_cnts.has_key(vector["process"]):
+            process_cnts[vector["process"]] = 0
+        process_cnts[vector["process"]] += 1
 
         # only show none "process" ones
         # if vector["process"] != "None":
@@ -208,14 +229,6 @@ esub_category_cnt = tmp_set.__len__()
 
 print "New conflicts:", sub_category_cnt - esub_category_cnt
 
-sum_apiserver = 0
-sum_controller_manager = 0
-for vector in vectors:
-    if vector["process"] == "kube-apiserver":
-        sum_apiserver += vector["no"]
-    elif vector["process"] == "kube-controller-manager":
-        sum_controller_manager += vector["no"]
+print "\nProcesses:"
 
-print "Originated from 'kube-apiserver':", sum_apiserver
-print "Originated from 'kube-controller-manager':", sum_controller_manager
-print "Originated from other places:", vector_size_original - sum_apiserver - sum_controller_manager
+pprint(process_cnts)
